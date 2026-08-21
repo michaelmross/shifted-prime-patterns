@@ -2,12 +2,17 @@
 
 [![verify-certificates](https://github.com/michaelmross/shifted-prime-patterns/actions/workflows/verify.yml/badge.svg)](https://github.com/michaelmross/shifted-prime-patterns/actions/workflows/verify.yml)
 
-Exhaustive search for the Wooley–Ziegler configuration
+A **shifted prime pattern** is a polynomial progression whose shift parameter is
+one less than a prime:
 
-$$a,\ a + P_1(p-1),\ \dots,\ a + P_{k-1}(p-1)$$
+$$a,\ a + P_1(p-1),\ \dots,\ a + P_{k-1}(p-1), \qquad p \ \text{prime},$$
 
-inside a set $A \subseteq [0,N)$, with exact certificates for the primes that
-admit no such configuration.
+where $P_1,\dots,P_{k-1} \in \mathbb{Z}[y]$ have zero constant term. This
+repository searches for these patterns exhaustively inside a set
+$A \subseteq [0,N)$ and issues exact certificates for the primes that admit
+none. By a theorem of Wooley and Ziegler, no set of positive density avoids
+them for every prime, so the certificates measure how far — and at what
+density — avoidance can be pushed.
 
 ## Method
 
