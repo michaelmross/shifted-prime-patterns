@@ -1,5 +1,7 @@
 # shifted-prime-patterns
 
+[![verify-certificates](https://github.com/michaelmross/shifted-prime-patterns/actions/workflows/verify.yml/badge.svg)](https://github.com/michaelmross/shifted-prime-patterns/actions/workflows/verify.yml)
+
 Exhaustive search for the Wooley–Ziegler configuration
 
 $$a,\ a + P_1(p-1),\ \dots,\ a + P_{k-1}(p-1)$$
