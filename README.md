@@ -104,11 +104,22 @@ Across four decades ($X = 10$ to $10^5$) the records track $X^{-1/2}$ closely
 (fitted exponent 0.50), against $\sim X^{-2}$ for the trivial family: the
 quadratic structure of the shifts, not their count, controls the decay. Under
 the window map $N = X^2$ this is density $N^{-1/4}$ — just above the
-$N^{-0.267}$ shape of Ruzsa's square-difference constructions. At every rung the winning conductor now sits an order of
-magnitude below the swept cap (the $X=10^5$ cap has been pushed to $60000$,
-$11\times$ the winner, without change), so the exponent looks robust, though
-larger conductors above the caps remain formally possible.
-`conductor_sweep.py` runs the ladder: reduced fractions only, with a modulus
+$N^{-0.267}$ shape of Ruzsa's square-difference constructions. At every rung the winning conductor sits roughly an order of
+magnitude below the swept cap ($9.7\times$ at the newest), so the profile is
+solidly measured throughout. Measured, the prefactor
+$\delta(X)\sqrt{X}$ is not constant but fluctuates within roughly a factor of
+two across rungs (from $2.18$ at $X=10^3$ down to $0.94$ at $X=3\cdot10^5$):
+the record is an extremal quantity over a sparse set of resonant conductors,
+and rung-to-rung scatter is intrinsic. The newest rung sits at the low edge of
+that band; whether the profile is $c\,X^{-1/2}$ with noise or genuinely
+steepens is exactly what the next decade ($X=10^6$) decides. The record
+conductors chain by shared factors ($37$, then $61$:
+$5\cdot17\cdot37 \to 5\cdot17\cdot61 \to 61\cdot181$), which
+`targeted_search.py` follows to moduli beyond any blind cap.
+Both sweep tools parallelize with `--jobs N` (interleaved modulus split,
+near-linear on physical cores), and `conductor_sweep.py` additionally takes
+`--mrange A B` with `--out`/`--merge` for multi-machine slices, reporting
+coverage slice-by-slice. `conductor_sweep.py` runs the ladder: reduced fractions only, with a modulus
 alive at $X$ iff the least prime $\equiv 1 \bmod K(m)$ exceeds $X$, where
 $K(m) = \prod q^{\lceil a_q/2 \rceil}$. Every record conductor found so far
 factors entirely into primes $\equiv 1 \bmod 4$ (beyond the power of two):
