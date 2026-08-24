@@ -100,12 +100,23 @@ A bitmask pass is an independent code path and yields the archival core digest,
 but is not required for the mathematical claim. The sweep cap `Mmax` truncates
 the family: raising it from 3000 to 8000 improved the $X=10^4$ record by 12%.
 
-Empirically $\delta(X) \gtrsim X^{-0.4}$ on this range, against $\sim X^{-2}$
-for the trivial family: the quadratic structure of the shifts, not their count,
-controls the decay. Already at $X=30$ an exact circulant independence
-computation strictly beats the interval family, so exact $\alpha$ over growing
-$m$ is the real instrument for the record table. Certificates for all six
-winners are in `certificates/`.
+Across four decades ($X = 10$ to $10^5$) the records track $X^{-1/2}$ closely
+(fitted exponent 0.50), against $\sim X^{-2}$ for the trivial family: the
+quadratic structure of the shifts, not their count, controls the decay. Under
+the window map $N = X^2$ this is density $N^{-1/4}$ — just above the
+$N^{-0.267}$ shape of Ruzsa's square-difference constructions. At every rung the winning conductor now sits an order of
+magnitude below the swept cap (the $X=10^5$ cap has been pushed to $60000$,
+$11\times$ the winner, without change), so the exponent looks robust, though
+larger conductors above the caps remain formally possible.
+`conductor_sweep.py` runs the ladder: reduced fractions only, with a modulus
+alive at $X$ iff the least prime $\equiv 1 \bmod K(m)$ exceeds $X$, where
+$K(m) = \prod q^{\lceil a_q/2 \rceil}$. Every record conductor found so far
+factors entirely into primes $\equiv 1 \bmod 4$ (beyond the power of two):
+$5\cdot29$, $2^3\cdot13\cdot37$, $5\cdot17\cdot37$, $5\cdot17\cdot61$ — an
+observed regularity, not yet an explanation. Already at $X=30$ an exact
+circulant independence computation strictly beats the interval family, so exact
+$\alpha$ over growing $m$ remains the record-setting instrument at small $X$.
+Certificates for all winners are in `certificates/`.
 
 ## What identifies a run
 
