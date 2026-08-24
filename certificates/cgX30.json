@@ -1,0 +1,168 @@
+{
+  "schema": "shifted-prime-patterns/3",
+  "params": {
+    "N": 1997,
+    "polys": "y^2",
+    "set": "cg:156,55,36",
+    "pmax": 30,
+    "allow_degenerate": false,
+    "count_witnesses": false,
+    "stop_at_first": false,
+    "chunk_bits": 8388608,
+    "local_scan": 64
+  },
+  "set": {
+    "kind": "cg",
+    "m": 156,
+    "c": 55,
+    "L": 36,
+    "density": 0.23076923076923078
+  },
+  "polynomials": [
+    "y^2"
+  ],
+  "mask": {
+    "N": 1997,
+    "sha256": "815ddadd439f928797c5ef041c2ce9c105e8ae97822be82ffe09dbd5312d018b",
+    "cardinality": 461,
+    "density": 0.23084626940410616,
+    "chunk_bits": 8388608
+  },
+  "summary": {
+    "primes_considered": 10,
+    "primes_tested": 10,
+    "primes_skipped_window": 0,
+    "primes_skipped_degenerate": 0,
+    "p_min": null,
+    "max_witness_element": null,
+    "window_use": null,
+    "primes_without_pattern": [
+      2,
+      3,
+      5,
+      7,
+      11,
+      13,
+      17,
+      19,
+      23,
+      29
+    ],
+    "elapsed_seconds": 0.0
+  },
+  "local_analysis": null,
+  "residue_scan": {
+    "qmax": 64,
+    "blocked_shift_classes": {},
+    "primes_blocked": 0,
+    "primes_blocked_by_modulus": {},
+    "least_blocking_modulus": {},
+    "contradictions": []
+  },
+  "rows": [
+    {
+      "p": 2,
+      "d": 1,
+      "offsets": "0;1",
+      "span": 1,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    },
+    {
+      "p": 3,
+      "d": 2,
+      "offsets": "0;4",
+      "span": 4,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    },
+    {
+      "p": 5,
+      "d": 4,
+      "offsets": "0;16",
+      "span": 16,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    },
+    {
+      "p": 7,
+      "d": 6,
+      "offsets": "0;36",
+      "span": 36,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    },
+    {
+      "p": 11,
+      "d": 10,
+      "offsets": "0;100",
+      "span": 100,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    },
+    {
+      "p": 13,
+      "d": 12,
+      "offsets": "0;144",
+      "span": 144,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    },
+    {
+      "p": 17,
+      "d": 16,
+      "offsets": "0;256",
+      "span": 256,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    },
+    {
+      "p": 19,
+      "d": 18,
+      "offsets": "0;324",
+      "span": 324,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    },
+    {
+      "p": 23,
+      "d": 22,
+      "offsets": "0;484",
+      "span": 484,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    },
+    {
+      "p": 29,
+      "d": 28,
+      "offsets": "0;784",
+      "span": 784,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    }
+  ],
+  "core_schema": "core/1",
+  "script_sha256": "8930355785eda4e2626190246179fabb3193c524822d1ea3075df4620ad74173",
+  "generated_utc": "2026-08-21T16:27:07+00:00",
+  "core_digest": "c9e2300b463d3f7b5797a7a5eb2dc4409d22132317116678f0f3325f3e328827"
+}
