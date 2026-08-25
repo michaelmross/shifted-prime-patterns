@@ -32,7 +32,7 @@
   "summary": {
     "primes_considered": 78498,
     "primes_tested": 1229,
-    "primes_skipped_window": 0,
+    "primes_skipped_window": 77269,
     "primes_skipped_degenerate": 0,
     "p_min": null,
     "max_witness_element": null,
@@ -1268,7 +1268,7 @@
       9967,
       9973
     ],
-    "elapsed_seconds": 5.23
+    "elapsed_seconds": 5.036
   },
   "local_analysis": {
     "modulus": 109922,
@@ -13671,7 +13671,7 @@
     }
   ],
   "core_schema": "core/1",
-  "script_sha256": "66c74c9df72f6c667f4e1119e1325cee31b1f52f2b9b18864efefcac829d02bd",
-  "generated_utc": "2026-08-25T09:25:23+00:00",
+  "script_sha256": "71a336e5659914346f48d23b71d257677771fe0636a770006a7f789d8df8f2eb",
+  "generated_utc": "2026-08-25T12:14:26+00:00",
   "core_digest": "d8fbc989df4395e86e4fa6e6ef795d0b12e4cf579e0031326edf6beb2c731dc1"
 }
