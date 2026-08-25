@@ -104,20 +104,25 @@ Across four decades ($X = 10$ to $10^5$) the records track $X^{-1/2}$ closely
 (fitted exponent 0.50), against $\sim X^{-2}$ for the trivial family: the
 quadratic structure of the shifts, not their count, controls the decay. Under
 the window map $N = X^2$ this is density $N^{-1/4}$ — just above the
-$N^{-0.267}$ shape of Ruzsa's square-difference constructions. At every rung the winning conductor sits roughly an order of
-magnitude below the swept cap ($9.7\times$ at the newest), so the profile is
-solidly measured throughout. Measured, the prefactor
-$\delta(X)\sqrt{X}$ is not constant but fluctuates within roughly a factor of
-two across rungs (from $2.18$ at $X=10^3$ down to $0.94$ at $X=3\cdot10^5$):
-the record is an extremal quantity over a sparse set of resonant conductors,
-and rung-to-rung scatter is intrinsic. The newest rung sits at the low edge of
-that band; whether the profile is $c\,X^{-1/2}$ with noise or genuinely
-steepens is exactly what the next decade ($X=10^6$) decides. The record
-conductors chain by shared factors ($37$, then $61$:
-$5\cdot17\cdot37 \to 5\cdot17\cdot61 \to 61\cdot181$), which
-`targeted_search.py` follows to moduli beyond any blind cap.
+$N^{-0.267}$ shape of Ruzsa's square-difference constructions. The prefactor $\delta(X)\sqrt{X}$ tells a three-stage story.
+Through $X=10^5$ it fluctuates in a band $[1.26,\,2.18]$ with the winning
+conductor always an order of magnitude below the swept cap. The last two rungs
+then decline out of the band: $0.94$ at $3\cdot10^5$ (coverage $9.7\times$
+the winner) and $0.84$ at $10^6$ — so the profile genuinely steepens beyond
+$X \approx 10^5$, with top-of-ladder local slopes near $0.6$. One caution on
+the newest rung: its blind coverage is the thinnest on the ladder ($150000$,
+only $1.4\times$ the winner; the structured family reaches $3\times$), so the
+most valuable next computation is extending the blind cap at $X=10^6$, not
+climbing further. The record at $10^6$ also changes shape — $m$ jumps tenfold
+and $L$ jumps from the teens to $92$ — and the conductor pool persists rather
+than chains: $61$ appears a third time and $17$ returns in
+$109922 = 2\cdot17\cdot53\cdot61$, every odd factor still $\equiv 1 \bmod 4$.
+`targeted_search.py` follows that structure to moduli beyond any blind cap.
 Both sweep tools parallelize with `--jobs N` (interleaved modulus split,
-near-linear on physical cores), and `conductor_sweep.py` additionally takes
+near-linear on physical cores), and large-`pmax` certificates can store only searched rows via
+`--rows tested` (the policy is recorded, so verification is unaffected; the
+$X=10^6$ certificate is 274 KB instead of 17.6 MB). `conductor_sweep.py`
+additionally takes
 `--mrange A B` with `--out`/`--merge` for multi-machine slices, reporting
 coverage slice-by-slice. `conductor_sweep.py` runs the ladder: reduced fractions only, with a modulus
 alive at $X$ iff the least prime $\equiv 1 \bmod K(m)$ exceeds $X$, where
