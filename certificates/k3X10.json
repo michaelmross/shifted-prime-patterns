@@ -1,0 +1,277 @@
+{
+  "schema": "shifted-prime-patterns/4",
+  "params": {
+    "N": 1088,
+    "polys": "y,y^2",
+    "set": "cg:7,2,4",
+    "pmax": 10,
+    "allow_degenerate": false,
+    "count_witnesses": false,
+    "stop_at_first": false,
+    "chunk_bits": 8388608,
+    "local_scan": 64,
+    "row_policy": "all"
+  },
+  "set": {
+    "kind": "cg",
+    "m": 7,
+    "c": 2,
+    "L": 4,
+    "density": 0.5714285714285714
+  },
+  "polynomials": [
+    "y",
+    "y^2"
+  ],
+  "mask": {
+    "N": 1088,
+    "sha256": "387277201f99c6cf0b396356569c0fe5c565ad17bc4b2ac7e528f259a2ee52f8",
+    "cardinality": 622,
+    "density": 0.5716911764705882,
+    "chunk_bits": 8388608
+  },
+  "summary": {
+    "primes_considered": 4,
+    "primes_tested": 3,
+    "primes_skipped_window": 0,
+    "primes_skipped_degenerate": 1,
+    "p_min": null,
+    "max_witness_element": null,
+    "window_use": null,
+    "primes_without_pattern": [
+      3,
+      5,
+      7
+    ],
+    "elapsed_seconds": 0.0
+  },
+  "local_analysis": {
+    "modulus": 7,
+    "admissible_shifts_mod_q": [
+      0,
+      1,
+      3,
+      5
+    ],
+    "admissible_count": 4,
+    "predicted_p_min": null,
+    "first_admissible_p_any_window": null,
+    "periodic_no_pattern_for_all_p_upto": 7,
+    "prediction_is_tight": true,
+    "searched_to": 7
+  },
+  "residue_scan": {
+    "qmax": 64,
+    "blocked_shift_classes": {
+      "7": [
+        2,
+        4,
+        6
+      ],
+      "14": [
+        2,
+        4,
+        6,
+        9,
+        11,
+        13
+      ],
+      "21": [
+        2,
+        4,
+        6,
+        9,
+        11,
+        13,
+        16,
+        18,
+        20
+      ],
+      "28": [
+        2,
+        4,
+        6,
+        9,
+        11,
+        13,
+        16,
+        18,
+        20,
+        23,
+        25,
+        27
+      ],
+      "35": [
+        2,
+        4,
+        6,
+        9,
+        11,
+        13,
+        16,
+        18,
+        20,
+        23,
+        25,
+        27,
+        30,
+        32,
+        34
+      ],
+      "42": [
+        2,
+        4,
+        6,
+        9,
+        11,
+        13,
+        16,
+        18,
+        20,
+        23,
+        25,
+        27,
+        30,
+        32,
+        34,
+        37,
+        39,
+        41
+      ],
+      "49": [
+        2,
+        4,
+        6,
+        9,
+        11,
+        13,
+        16,
+        18,
+        20,
+        23,
+        25,
+        27,
+        30,
+        32,
+        34,
+        37,
+        39,
+        41,
+        44,
+        46,
+        48
+      ],
+      "56": [
+        2,
+        4,
+        6,
+        9,
+        11,
+        13,
+        16,
+        18,
+        20,
+        23,
+        25,
+        27,
+        30,
+        32,
+        34,
+        37,
+        39,
+        41,
+        44,
+        46,
+        48,
+        51,
+        53,
+        55
+      ],
+      "63": [
+        2,
+        4,
+        6,
+        9,
+        11,
+        13,
+        16,
+        18,
+        20,
+        23,
+        25,
+        27,
+        30,
+        32,
+        34,
+        37,
+        39,
+        41,
+        44,
+        46,
+        48,
+        51,
+        53,
+        55,
+        58,
+        60,
+        62
+      ]
+    },
+    "primes_blocked": 3,
+    "primes_blocked_by_modulus": {
+      "7": 3
+    },
+    "least_blocking_modulus": {
+      "3": 7,
+      "5": 7,
+      "7": 7
+    },
+    "contradictions": []
+  },
+  "rows": [
+    {
+      "p": 2,
+      "d": 1,
+      "offsets": "0;1;1",
+      "span": 1,
+      "status": "skipped_degenerate",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    },
+    {
+      "p": 3,
+      "d": 2,
+      "offsets": "0;2;4",
+      "span": 4,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    },
+    {
+      "p": 5,
+      "d": 4,
+      "offsets": "0;4;16",
+      "span": 16,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    },
+    {
+      "p": 7,
+      "d": 6,
+      "offsets": "0;6;36",
+      "span": 36,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    }
+  ],
+  "core_schema": "core/1",
+  "script_sha256": "71a336e5659914346f48d23b71d257677771fe0636a770006a7f789d8df8f2eb",
+  "generated_utc": "2026-08-25T15:43:37+00:00",
+  "core_digest": "2778f0620437e19bb831e25299a7837b471cfbbce2da4066958f2474a6d97b03"
+}

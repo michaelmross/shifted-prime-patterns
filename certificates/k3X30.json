@@ -1,0 +1,245 @@
+{
+  "schema": "shifted-prime-patterns/4",
+  "params": {
+    "N": 1864,
+    "polys": "y,y^2",
+    "set": "cg:23,5,10",
+    "pmax": 30,
+    "allow_degenerate": false,
+    "count_witnesses": false,
+    "stop_at_first": false,
+    "chunk_bits": 8388608,
+    "local_scan": 64,
+    "row_policy": "all"
+  },
+  "set": {
+    "kind": "cg",
+    "m": 23,
+    "c": 5,
+    "L": 10,
+    "density": 0.43478260869565216
+  },
+  "polynomials": [
+    "y",
+    "y^2"
+  ],
+  "mask": {
+    "N": 1864,
+    "sha256": "a8c784b13481d73c738a4211b0c259e93368eb1c4aa026c303e9cf7123909600",
+    "cardinality": 811,
+    "density": 0.43508583690987124,
+    "chunk_bits": 8388608
+  },
+  "summary": {
+    "primes_considered": 10,
+    "primes_tested": 9,
+    "primes_skipped_window": 0,
+    "primes_skipped_degenerate": 1,
+    "p_min": null,
+    "max_witness_element": null,
+    "window_use": null,
+    "primes_without_pattern": [
+      3,
+      5,
+      7,
+      11,
+      13,
+      17,
+      19,
+      23,
+      29
+    ],
+    "elapsed_seconds": 0.0
+  },
+  "local_analysis": {
+    "modulus": 23,
+    "admissible_shifts_mod_q": [
+      0,
+      1,
+      3,
+      8,
+      9,
+      11,
+      13,
+      15,
+      17,
+      20
+    ],
+    "admissible_count": 10,
+    "predicted_p_min": null,
+    "first_admissible_p_any_window": null,
+    "periodic_no_pattern_for_all_p_upto": 29,
+    "prediction_is_tight": true,
+    "searched_to": 29
+  },
+  "residue_scan": {
+    "qmax": 64,
+    "blocked_shift_classes": {
+      "23": [
+        2,
+        4,
+        5,
+        6,
+        7,
+        10,
+        12,
+        14,
+        16,
+        18,
+        19,
+        21,
+        22
+      ],
+      "46": [
+        2,
+        4,
+        5,
+        6,
+        7,
+        10,
+        12,
+        14,
+        16,
+        18,
+        19,
+        21,
+        22,
+        25,
+        27,
+        28,
+        29,
+        30,
+        33,
+        35,
+        37,
+        39,
+        41,
+        42,
+        44,
+        45
+      ]
+    },
+    "primes_blocked": 9,
+    "primes_blocked_by_modulus": {
+      "23": 9
+    },
+    "least_blocking_modulus": {
+      "3": 23,
+      "5": 23,
+      "7": 23,
+      "11": 23,
+      "13": 23,
+      "17": 23,
+      "19": 23,
+      "23": 23,
+      "29": 23
+    },
+    "contradictions": []
+  },
+  "rows": [
+    {
+      "p": 2,
+      "d": 1,
+      "offsets": "0;1;1",
+      "span": 1,
+      "status": "skipped_degenerate",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    },
+    {
+      "p": 3,
+      "d": 2,
+      "offsets": "0;2;4",
+      "span": 4,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    },
+    {
+      "p": 5,
+      "d": 4,
+      "offsets": "0;4;16",
+      "span": 16,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    },
+    {
+      "p": 7,
+      "d": 6,
+      "offsets": "0;6;36",
+      "span": 36,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    },
+    {
+      "p": 11,
+      "d": 10,
+      "offsets": "0;10;100",
+      "span": 100,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    },
+    {
+      "p": 13,
+      "d": 12,
+      "offsets": "0;12;144",
+      "span": 144,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    },
+    {
+      "p": 17,
+      "d": 16,
+      "offsets": "0;16;256",
+      "span": 256,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    },
+    {
+      "p": 19,
+      "d": 18,
+      "offsets": "0;18;324",
+      "span": 324,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    },
+    {
+      "p": 23,
+      "d": 22,
+      "offsets": "0;22;484",
+      "span": 484,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    },
+    {
+      "p": 29,
+      "d": 28,
+      "offsets": "0;28;784",
+      "span": 784,
+      "status": "no_pattern",
+      "witness_a": "",
+      "witness_pattern": "",
+      "witness_count": ""
+    }
+  ],
+  "core_schema": "core/1",
+  "script_sha256": "71a336e5659914346f48d23b71d257677771fe0636a770006a7f789d8df8f2eb",
+  "generated_utc": "2026-08-25T15:43:37+00:00",
+  "core_digest": "70e310a492565f283996d3a338e8916aa6ab7f7540be289546d99d28126c9d8d"
+}
