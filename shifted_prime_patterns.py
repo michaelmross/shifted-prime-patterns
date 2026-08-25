@@ -50,7 +50,7 @@ from datetime import datetime, timezone
 
 import numpy as np
 
-SCHEMA = "shifted-prime-patterns/3"
+SCHEMA = "shifted-prime-patterns/4"
 CORE = "core/1"     # digest scope; frozen, so additive schema changes never move it
 DEFAULT_CHUNK_BITS = 1 << 23  # 8388608 bits per construction chunk
 MOD_BITS = 48                 # dyadic precision for Bohr / quadratic-phase sets
@@ -528,6 +528,7 @@ def run(params: dict, progress: bool = True):
                       params.get("local_scan", 64),
                       params.get("allow_degenerate", False), rows)
 
+
     witness_elts = [max(int(x) for x in r["witness_pattern"].split(";"))
                     for r in rows if r["status"] == "pattern"]
     max_witness = max(witness_elts) if witness_elts else None
@@ -562,7 +563,8 @@ def run(params: dict, progress: bool = True):
         },
         "local_analysis": local,
         "residue_scan": scan,
-        "rows": rows,
+        "rows": (rows if params.get("row_policy", "all") == "all" else
+                 [r for r in rows if r["status"] in ("pattern", "no_pattern")]),
         "core_schema": CORE,
         "script_sha256": self_sha256(),
         "generated_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -681,10 +683,9 @@ def report(result: dict):
         qs = ", ".join(f"q={q}:{len(v)}/{q}"
                        for q, v in list(sc["blocked_shift_classes"].items())[:6])
         print(f"  residue scan blocked shift classes at {qs}")
-        npn = len(s["primes_without_pattern"])
-        share = f" ({sc['primes_blocked']}/{npn})" if npn else ""
-        print(f"  explained    {sc['primes_blocked']} prime(s) blocked by "
-              f"congruence alone{share}")
+        tot = s["primes_considered"]
+        print(f"  explained    {sc['primes_blocked']} of {tot} primes <= pmax "
+              "blocked by congruence alone (window-free)")
         if sc["contradictions"]:
             print(f"  ERROR        blocked primes that reported a pattern: "
                   f"{sc['contradictions'][:10]}")
@@ -788,6 +789,12 @@ in uint64 arithmetic, so the set is the one named in the certificate.""")
                     help="count all witnesses per prime, not just the least")
     ap.add_argument("--stop-at-first", action="store_true",
                     help="stop once a witness prime is found")
+    ap.add_argument("--rows", choices=("all", "tested"), default="all",
+                    help="row detail stored in the certificate: 'tested' omits "
+                         "window-skipped and degenerate rows (their counts stay "
+                         "in the summary and the periodic certificate is "
+                         "unaffected); recorded in params so --verify rebuilds "
+                         "identically")
     ap.add_argument("--local-scan", type=int, default=64, metavar="QMAX",
                     help="scan moduli 2..QMAX for exact residue obstructions "
                          "(0 disables)")
@@ -815,6 +822,7 @@ in uint64 arithmetic, so the set is the one named in the certificate.""")
         "stop_at_first": args.stop_at_first,
         "chunk_bits": args.chunk_bits,
         "local_scan": args.local_scan,
+        "row_policy": args.rows,
     }
     result = run(params)
     report(result)
