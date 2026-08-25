@@ -134,6 +134,57 @@ circulant independence computation strictly beats the interval family, so exact
 $\alpha$ over growing $m$ remains the record-setting instrument at small $X$.
 Certificates for all winners are in `certificates/`.
 
+## The k=3 ladder
+
+`k3_sweep.py` runs the same campaign for the length-3 polynomial progression
+$x,\ x+(p-1),\ x+(p-1)^2$ — the model configuration of the
+Krause–Mousavi–Tao–Teräväinen paper. For an interval set the pattern at shift
+$d$ exists iff $\{0,\ cd,\ cd^2\} \bmod m$ fit in a cyclic window of $L$
+residues, so the margin is the circular span $m - \mathrm{maxgap}$, with the
+$k=2$ scan as the two-point special case ($p=2$ is degenerate here, $d=d^2$,
+and is skipped throughout). Blocking dies only when $m \mid d$ itself, so
+$K(m)=m$: the square-part survival trick of the $k=2$ landscape does not exist
+at $k=3$.
+
+| $X$ | $k=3$ record | $\delta_3$ | $\delta_2$ | ratio |
+|---|---|---|---|---|
+| 10 | $4/7$ at $(7,2,4)$ | 0.571 | 0.400 | 1.43 |
+| 30 | $10/23$ | 0.435 | 0.232 | 1.87 |
+| 100 | $352/1003$ | 0.351 | 0.176 | 1.99 |
+| 300 | $845/3627$ | 0.233 | 0.095 | 2.45 |
+| 1000 | $2040/11931$ | 0.171 | 0.069 | 2.48 |
+| 10000 | $76/844$ ($m\le 60000$) | 0.090 | 0.0135 | 6.66 |
+| 30000 | $96/1412$ ($m\le 60000$) | 0.068 | 0.0079 | 8.55 |
+| 100000 | $290/6578$ ($m\le 60000$) | 0.044 | 0.0041 | 10.88 |
+
+Three measured contrasts with $k=2$, all certified (`certificates/k3X*.json`).
+The decay follows a remarkably clean empirical law: fitted exponent $0.267$
+with the prefactor $\delta_3\,X^{0.267}$ pinned in $[1.06, 1.20]$ across seven
+rungs — and then, at $X=10^5$, a first dip below the band to $0.96$ (coverage
+$9.1\times$ the winner; no alive modulus exists below $2000$ at that
+threshold, so the exceptional small moduli that powered earlier rungs are
+depleting). Both ladders thus show the same signature — a clean power law that
+bends at the top — which may share a cause: finite-size depletion of the
+resonant-modulus pool, or a genuine asymptotic steepening; extending the
+$X=10^5$ cap distinguishes them — far tighter than the $k=2$ ladder's factor-of-two scatter —
+so roughly $\delta_3 \approx 1.1\,X^{-0.27}$ against $k=2$'s $X^{-1/2}$,
+with the ratio between the ladders growing like $X^{0.23}$. (That the exponent
+lands near Ruzsa's $0.267$ for square-difference constructions is, until
+proven otherwise, a coincidence worth staring at.) The mechanism at the top is
+different in kind: the $X=10^4$ record sits at the *small* modulus
+$844 = 2^2\cdot211$, alive only because the least prime
+$\equiv 1 \bmod 844$ is $10973 = 13.0\,m$ — an exceptionally prime-free
+progression — and it survived a cap $71\times$ the winner. The $k=3$ ladder
+chases moduli with exceptionally large least primes in the progression
+$1 \bmod m$, tying its records directly to Linnik-type extremes. The record shape inverts: windows are wide ($L/m$ up to $0.57$)
+where $k=2$ gaps were thin, and the critical sets are tiny with *small* primes
+binding ($X=1000$ has a single critical prime, $p=19$), where the top of the
+$k=2$ ladder was pinned entirely by large ones. And the mod-4 regularity dies:
+$7$, $23$, $59 \mid 1003$, $31 \mid 3627$ are all $\equiv 3 \bmod 4$, so
+that phenomenon belongs to the pure-square configuration's quadratic-residue
+symmetry, not to the problem family. $\delta_3 \ge \delta_2$ holds at every
+rung, as it must: the three-point span dominates both two-point margins.
+
 ## What identifies a run
 
 The digest of the JSON file is **not** a stable identifier. It moves whenever the
