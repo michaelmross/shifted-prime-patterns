@@ -14,7 +14,7 @@ where $$P_1,\dots,P_{k-1} \in \mathbb{Z}[y]$$ have zero constant term. This
 $$A \subseteq [0,N)$$ and issues exact certificates for the primes that admit
 none. By a theorem of Wooley and Ziegler, no set of positive density avoids
 them for every prime, so the certificates measure how far — and at what
-density — avoidance can be pushed.
+density — avoidance can be pushed. 
 
 ## Method
 
