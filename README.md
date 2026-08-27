@@ -1,5 +1,5 @@
 # shifted-prime-patterns
-<small>Repository: [https://github.com/michaelmross/shifted-prime-patterns](https://github.com/michaelmross/shifted-prime-patterns)</small>
+<span style="font-size: 0.8em;">Repository: [https://github.com/michaelmross/shifted-prime-patterns](https://github.com/michaelmross/shifted-prime-patterns)</span>
 
 [![verify-certificates](https://github.com/michaelmross/shifted-prime-patterns/actions/workflows/verify.yml/badge.svg)](https://github.com/michaelmross/shifted-prime-patterns/actions/workflows/verify.yml)
 
