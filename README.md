@@ -1,5 +1,4 @@
 # shifted-prime-patterns
-Repository: [https://github.com/michaelmross/shifted-prime-patterns](https://github.com/michaelmross/shifted-prime-patterns)
 
 [![verify-certificates](https://github.com/michaelmross/shifted-prime-patterns/actions/workflows/verify.yml/badge.svg)](https://github.com/michaelmross/shifted-prime-patterns/actions/workflows/verify.yml)
 
@@ -11,7 +10,7 @@ one less than a prime:
 $$a,\ a + P_1(p-1),\ \dots,\ a + P_{k-1}(p-1), \qquad p \ \text{prime},$$
 
 where $$P_1,\dots,P_{k-1} \in \mathbb{Z}[y]$$ have zero constant term. This
-repository searches for these patterns exhaustively inside a set
+[repository](https://github.com/michaelmross/shifted-prime-patterns) searches for these patterns exhaustively inside a set
 $$A \subseteq [0,N)$$ and issues exact certificates for the primes that admit
 none. By a theorem of Wooley and Ziegler, no set of positive density avoids
 them for every prime, so the certificates measure how far — and at what
