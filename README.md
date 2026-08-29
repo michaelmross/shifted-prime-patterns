@@ -40,18 +40,21 @@ that ceiling are recorded as `skipped_window` rather than silently dropped.
 ```bash
 # three-term progression, spacing p-1, inside 6Z
 python3 shifted_prime_patterns.py --N 1000000 --polys "y,2y" \
-    --set congruence:6 --pmax 200 --out runs/cong6
+    --set congruence:6 --pmax 200 --out cong6
 
 # square differences in a digit-restricted set
 python3 shifted_prime_patterns.py --N 20000000 --polys "y^2" \
-    --set digits:8,0,1,3 --pmax 4000 --out runs/digits8
+    --set digits:8,0,1,3 --pmax 4000 --out digits8
 
 # re-run a stored certificate and compare
-python3 shifted_prime_patterns.py --verify runs/cong6.json
+python3 shifted_prime_patterns.py --verify certificates/cong6.json
 ```
 
 Each run writes `<prefix>.json` (certificate) and `<prefix>.csv` (per-prime
 table with offsets, status, least witness, and optionally the witness count).
+Outputs land wherever the prefix points — treat them as scratch. Canonical
+certificates live in `certificates/` (CI-verified), and `runs/` is reserved
+for sweep-coverage evidence; neither is a destination for example runs.
 
 ## Set families
 
@@ -126,8 +129,14 @@ near-linear on physical cores), and large-`pmax` certificates can store only sea
 `--rows tested` (the policy is recorded, so verification is unaffected; the
 $X=10^6$ certificate is 274 KB instead of 17.6 MB). `conductor_sweep.py`
 additionally takes
-`--mrange A B` with `--out`/`--merge` for multi-machine slices, reporting
-coverage slice-by-slice. `conductor_sweep.py` runs the ladder: reduced fractions only, with a modulus
+`--mrange A B` with `--out`/`--merge` for multi-machine slices (pass `--seed`
+with the known record so slice scans prune properly), `--state` for
+checkpoint-resume across sessions, and worker heartbeats on stderr. Sweep
+summaries written by `--out` are coverage evidence, not certificates — they
+document what was searched rather than certifying a set, so they live in
+`runs/` (e.g. `runs/x1e6_ext.json`, the 94-hour $(150001, 400000]$ slice
+behind the $X=10^6$ cap) and stay out of `certificates/`, whose CI invariant
+is that every file reproduces byte-for-byte under `--verify`. `conductor_sweep.py` runs the ladder: reduced fractions only, with a modulus
 alive at $X$ iff the least prime $\equiv 1 \bmod K(m)$ exceeds $X$, where
 $K(m) = \prod q^{\lceil a_q/2 \rceil}$. Every record conductor found so far
 factors entirely into primes $\equiv 1 \bmod 4$ (beyond the power of two):
