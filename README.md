@@ -59,7 +59,7 @@ table with offsets, status, least witness, and optionally the witness count).
 |---|---|---|
 | `all` | $[0,N)$ | sanity check |
 | `congruence:q[,r...]` | union of residue classes mod $q$ | exact local obstruction |
-| `digits:b,d1,d2,...` | all base-$b$ digits in $D$ | adversarial, Behrend/Ruzsa style |
+| `digits:b,d1,d2,...` | all digits from $D$ in base $b$ | adversarial, Behrend/Ruzsa style |
 | `bohr:alpha,c` | $\{n : \lVert \alpha n\rVert < c\}$ | control |
 | `quad:alpha,c` | $\{n : \lVert \alpha n^2\rVert < c\}$ | control |
 | `random:delta[,seed]` | independent bits | control |
