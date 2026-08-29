@@ -2,7 +2,7 @@
 
 [![verify-certificates](https://github.com/michaelmross/shifted-prime-patterns/actions/workflows/verify.yml/badge.svg)](https://github.com/michaelmross/shifted-prime-patterns/actions/workflows/verify.yml)
 
-[*Investigating the lower bounds of shifted prime patterns*](https://michaelmross.github.io/shifted-prime-patterns.html) (Ross, M. M.)
+[*How dense can a set be while avoiding shifted-prime patterns?*](https://michaelmross.github.io/shifted-prime-patterns.html) (Ross, M. M.)
 
 A **shifted prime pattern** is a polynomial progression whose shift parameter is
 one less than a prime:
