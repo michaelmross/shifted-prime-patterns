@@ -4,6 +4,7 @@
 
 [*How dense can a set be while avoiding shifted-prime patterns?*](https://michaelmross.github.io/shifted-prime-patterns.html) (Ross, M. M.)
 
+
 A **shifted prime pattern** is a polynomial progression whose shift parameter is
 one less than a prime:
 
@@ -169,6 +170,7 @@ at $k=3$.
 | 30000 | $96/1412$ ($m\le 60000$) | 0.068 | 0.0079 | 8.55 |
 | 100000 | $290/6578$ ($m\le 150000$) | 0.044 | 0.0041 | 10.88 |
 | 300000 | $322/10454$ ($m\le 150000$) | 0.031 | 0.0017 | 17.90 |
+| 1000000 | $1160/54386$ ($m\le 60000$) | 0.021 | 0.00084 | 25.48 |
 
 Three measured contrasts with $k=2$, all certified (`certificates/k3X*.json`).
 The decay follows a remarkably clean empirical law: fitted exponent $0.267$
@@ -183,8 +185,15 @@ sustained, not a one-rung sag. The mechanism escalates on schedule: the
 winners' least-prime ratios read $13\times, 24\times, 17\times, 38\times$
 up the ladder ($397253 = 38.0 \cdot 10454$ at the top), so each rung is
 buying an ever-rarer Linnik-extreme modulus and the geometry premium at larger
-$m$ is not covering the difference. Both ladders now show sustained bending
-under solid coverage at their tops — far tighter than the $k=2$ ladder's factor-of-two scatter —
+$m$ is not covering the difference. A sieving-only pool analysis (`pool_floor.py`) then splits the two
+bends: the $k=3$ records are pinned to the alive pool's floor from $X=10^4$
+on (winner $\varphi$ within 30% of $\varphi_{\min}$, equal at
+$3\cdot10^4$), so that bend is floor-driven — though the $X=10^6$ test broke strict
+pinning (measured $0.0213$ vs floor prediction $0.0170$, ratio $1.66$ to the
+floor), so the floor anchors the decline from below rather than pinning it;
+predictions $0.0114, 0.0073$ at $3\cdot10^6, 10^7$ stand as anchors — while the $k=2$ winners never pin
+($1.5$&ndash;$5\times$ the floor, no trend), so that bend's cause remains
+open. Both ladders show sustained bending under solid coverage at their tops — far tighter than the $k=2$ ladder's factor-of-two scatter —
 so roughly $\delta_3 \approx 1.1\,X^{-0.27}$ against $k=2$'s $X^{-1/2}$,
 with the ratio between the ladders growing like $X^{0.23}$. (That the exponent
 lands near Ruzsa's $0.267$ for square-difference constructions is, until
