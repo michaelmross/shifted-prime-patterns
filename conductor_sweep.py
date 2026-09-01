@@ -30,10 +30,26 @@ usage examples:
 """
 import argparse
 import json
+import os
+import signal
 import sys
 import time
 
 import numpy as np
+
+_STOP = None            # multiprocessing.Event in workers; None when serial
+
+
+def _init_worker(ev):
+    """Pool initializer: inherit the stop event, and ignore console Ctrl+C so
+    the parent alone coordinates a cooperative shutdown (Windows sends the
+    console control event to every attached process)."""
+    global _STOP
+    _STOP = ev
+    try:
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
+    except Exception:
+        pass
 
 
 def prime_sieve(n):
@@ -106,7 +122,8 @@ def scan_modulus(m, Svals, best):
     return None
 
 
-def sweep(X, M, budget=None, seed=0.0, verbose=True, mmin=2, step=1):
+def sweep(X, M, budget=None, seed=0.0, verbose=True, mmin=2, step=1,
+          heartbeat=None):
     t0 = time.time()
     is_prime = prime_sieve(X)
     P = np.nonzero(is_prime)[0].astype(np.int64)
@@ -120,10 +137,14 @@ def sweep(X, M, budget=None, seed=0.0, verbose=True, mmin=2, step=1):
     stopped_at = M
     last_done = mmin - step
     for m in range(mmin, M + 1, step):
-        if budget and time.time() - t0 > budget:
+        if (budget and time.time() - t0 > budget) or (_STOP is not None
+                                                      and _STOP.is_set()):
             stopped_at = last_done
             break
         last_done = m
+        if heartbeat and (m - mmin) % (heartbeat * step) < step:
+            print(f"    [worker m0={mmin}] at m={m}, best {best:.6f},"
+                  f" {time.time()-t0:.0f}s", file=sys.stderr, flush=True)
         K = K_of(m, spf)
         if least_prime_1mod(K, X, is_prime, cache):
             continue                       # dead: some (p-1)^2 == 0 mod m
@@ -146,7 +167,7 @@ def sweep(X, M, budget=None, seed=0.0, verbose=True, mmin=2, step=1):
 def _sweep_worker(args):
     X, M, budget, seed, mmin, step = args
     return sweep(X, M, budget=budget, seed=seed, verbose=False,
-                 mmin=mmin, step=step)
+                 mmin=mmin, step=step, heartbeat=5000)
 
 
 def critical_primes(X, m, c, L):
@@ -202,6 +223,14 @@ def main():
                          "multi-machine runs; combine with --out and --merge)")
     ap.add_argument("--out", metavar="FILE",
                     help="write a machine-readable JSON summary of this run")
+    ap.add_argument("--seed", type=float, default=0.0,
+                    help="known record density to prune against (e.g. "
+                         "0.000837 for X=1e6); sliced runs without this do "
+                         "unpruned scans and cost several times more. A run "
+                         "reports a winner only if it strictly beats the seed")
+    ap.add_argument("--state", metavar="FILE",
+                    help="checkpoint file: budget-truncated sessions resume "
+                         "where they stopped when the same command is re-run")
     ap.add_argument("--merge", nargs="+", metavar="FILE",
                     help="merge JSON summaries from --out runs instead of "
                          "sweeping; reports the combined record and honest cap")
@@ -219,18 +248,45 @@ def main():
         if mmin < 2 or M < mmin:
             ap.error("--mrange needs 2 <= A <= B")
 
-    tag = f", slice [{mmin},{M}]" if args.mrange else ""
+    state = None
+    if args.state and os.path.isfile(args.state):
+        state = json.load(open(args.state))
+        if (state["X"] != X or state["cap"] != M
+                or state.get("mmin0", 2) != mmin):
+            sys.exit(f"state file {args.state} is for X={state['X']},"
+                     f" range [{state.get('mmin0', 2)},{state['cap']}];"
+                     " refusing to mix parameters")
+        if state.get("complete"):
+            print(f"already complete: best {state['best']:.6f}"
+                  f" at {state['winner']}  [{state['elapsed']:.0f}s total]")
+            return
+        print(f"resuming from m = {state['next_m']}"
+              f" (best so far {state['best']:.6f}, {state['elapsed']:.0f}s spent)")
+    mmin0 = mmin
+    if state:
+        mmin = state["next_m"]
+
+    tag = f", slice [{mmin},{M}]" if (args.mrange or state) else ""
     jobs = max(1, args.jobs)
     print(f"X = {X}, cap M = {M}{tag}"
           + (f", budget {budget:.0f}s" if budget else "")
           + (f", jobs {jobs}" if jobs > 1 else ""))
-    pilot_cap = min(4000, mmin - 1) if args.mrange else min(M, 4000)
-    if pilot_cap >= 2:
-        pilot = sweep(X, pilot_cap, verbose=False)
+    if state:
+        pilot = {"best": state["best"],
+                 "winner": tuple(state["winner"]) if state["winner"] else None,
+                 "seconds": 0.0}
+        pilot_cap = None
     else:
+        pilot_cap = min(4000, mmin - 1) if args.mrange else min(M, 4000)
+    if pilot_cap is not None and pilot_cap >= 2:
+        pilot = sweep(X, pilot_cap, verbose=False)
+    elif pilot_cap is not None:
         pilot = {"best": 0.0, "winner": None, "seconds": 0.0}
-    print(f"  pilot (M={pilot_cap}): density {pilot['best']:.6f} at {pilot['winner']}"
-          f"  [{pilot['seconds']}s]")
+    if args.seed > pilot["best"]:
+        pilot = {"best": args.seed, "winner": None, "seconds": pilot.get("seconds", 0.0)}
+    if pilot_cap is not None:
+        print(f"  pilot (M={pilot_cap}): density {pilot['best']:.6f}"
+              f" at {pilot['winner']}  [{pilot['seconds']}s]")
     if jobs == 1:
         full = sweep(X, M, budget=budget, seed=pilot["best"], verbose=True,
                      mmin=mmin, step=1)
@@ -239,8 +295,18 @@ def main():
         work = [(X, M, budget, pilot["best"], mmin + j, jobs)
                 for j in range(jobs)]
         t0 = time.time()
-        with mp.Pool(jobs) as pool:
-            parts = pool.map(_sweep_worker, work)
+        ev = mp.Event()
+        interrupted = False
+        with mp.Pool(jobs, initializer=_init_worker, initargs=(ev,)) as pool:
+            res = pool.map_async(_sweep_worker, work)
+            try:
+                parts = res.get()
+            except KeyboardInterrupt:
+                interrupted = True
+                print("\n  interrupt received: asking workers to stop at their"
+                      " current modulus...", flush=True)
+                ev.set()
+                parts = res.get()
         cands = [q for q in parts if q["winner"]]
         top = max(cands, key=lambda q: q["best"]) if cands else parts[0]
         # a worker is complete iff it reached the last modulus of its stride;
@@ -259,8 +325,9 @@ def main():
     if full["winner"] is None and not args.mrange:
         full["winner"], full["best"] = pilot["winner"], pilot["best"]
     if full["winner"] is None:
+        inc = pilot["winner"] if pilot["winner"] else "seed"
         print(f"  no record inside slice [{mmin},{M}]"
-              f" beats the pilot incumbent {pilot['winner']}"
+              f" beats the incumbent {inc}"
               f" (density {pilot['best']:.6f}); slice is coverage-only")
         crit = []
     else:
@@ -273,8 +340,22 @@ def main():
           + (f" ... +{len(crit) - 10} more" if len(crit) > 10 else ""))
     print(f"  alive moduli: {full['alive']}   sweep time {full['seconds']}s")
     if full["swept_to"] < M:
-        print(f"  NOTE: budget exhausted at m={full['swept_to']} < {M};"
+        why = "interrupted" if (jobs > 1 and interrupted) else "budget exhausted"
+        print(f"  NOTE: {why} at m={full['swept_to']} < {M};"
               " record is within that smaller cap")
+    if args.state:
+        done = full["swept_to"] >= M
+        json.dump({"X": X, "cap": M, "mmin0": mmin0, "seed": args.seed,
+                   "next_m": full["swept_to"] + 1,
+                   "best": full["best"],
+                   "winner": list(full["winner"]) if full["winner"] else None,
+                   "alive": full["alive"] + (state["alive"] if state else 0),
+                   "elapsed": full["seconds"] + (state["elapsed"] if state else 0.0),
+                   "complete": done},
+                  open(args.state, "w"), indent=1)
+        print(f"  state -> {args.state}"
+              + ("  (complete)" if done else
+                 "  (re-run the same command to continue)"))
     if args.out:
         full["critical_primes"] = crit
         with open(args.out, "w") as fh:

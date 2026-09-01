@@ -28,7 +28,25 @@ usage examples:
   python k3_sweep.py 10000 30000 3600 --jobs 4
 """
 import argparse
+import json
+import os
+import signal
+import sys
 import time
+
+_STOP = None            # multiprocessing.Event in workers; local flag object serially
+
+
+def _init_worker(ev):
+    """Pool initializer: inherit the stop event, ignore console Ctrl+C so the
+    parent alone coordinates a cooperative shutdown (Windows sends the console
+    control event to every attached process)."""
+    global _STOP
+    _STOP = ev
+    try:
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
+    except Exception:
+        pass
 
 import numpy as np
 
@@ -65,7 +83,8 @@ def scan_modulus_k3(m, Dres, best):
     return None
 
 
-def sweep(X, M, budget=None, seed=0.0, verbose=True, mmin=2, step=1):
+def sweep(X, M, budget=None, seed=0.0, verbose=True, mmin=2, step=1,
+          heartbeat=None):
     t0 = time.time()
     is_prime = prime_sieve(X)
     P = np.nonzero(is_prime)[0].astype(np.int64)
@@ -77,10 +96,15 @@ def sweep(X, M, budget=None, seed=0.0, verbose=True, mmin=2, step=1):
     stopped_at = M
     last_done = mmin - step
     for m in range(mmin, M + 1, step):
-        if budget and time.time() - t0 > budget:
+        if (budget and time.time() - t0 > budget) or (_STOP is not None
+                                                      and _STOP.is_set()):
             stopped_at = last_done
             break
         last_done = m
+        if heartbeat and (m - mmin) % (heartbeat * step) < step:
+            import sys
+            print(f"    [worker m0={mmin}] at m={m}, best {best:.6f},"
+                  f" {time.time()-t0:.0f}s", file=sys.stderr, flush=True)
         if least_prime_1mod(m, X, is_prime, cache):
             continue                           # some p == 1 mod m: dead
         alive += 1
@@ -102,7 +126,7 @@ def sweep(X, M, budget=None, seed=0.0, verbose=True, mmin=2, step=1):
 def _worker(args):
     X, M, budget, seed, mmin, step = args
     return sweep(X, M, budget=budget, seed=seed, verbose=False,
-                 mmin=mmin, step=step)
+                 mmin=mmin, step=step, heartbeat=2000)
 
 
 def critical_primes(X, m, c, L):
@@ -130,28 +154,73 @@ def main():
                     help="wall-clock budget in seconds")
     ap.add_argument("--jobs", type=int, default=1,
                     help="parallel workers over interleaved moduli")
+    ap.add_argument("--seed", type=float, default=0.0,
+                    help="known record density to prune against (e.g. 0.0213 "
+                         "for X=1e6); without it, scans above a dead pilot "
+                         "range run at full depth and cost several times more")
+    ap.add_argument("--state", metavar="FILE",
+                    help="checkpoint file: a budget-truncated session records "
+                         "where it stopped, and re-running the same command "
+                         "resumes there (jobs may differ between sessions)")
     args = ap.parse_args()
     X, M, jobs = args.X, args.Mmax, max(1, args.jobs)
+
+    state = None
+    if args.state and os.path.isfile(args.state):
+        state = json.load(open(args.state))
+        if state["X"] != X or state["cap"] != M:
+            sys.exit(f"state file {args.state} is for X={state['X']}, "
+                     f"M={state['cap']}; refusing to mix parameters")
+        if state.get("complete"):
+            m, c, L = state["winner"]
+            print(f"already complete: (m,c,L)=({m},{c},{L})"
+                  f"  density {L}/{m} = {state['best']:.6f}"
+                  f"  [{state['elapsed']:.0f}s total]")
+            return
+        print(f"resuming from m = {state['next_m']}"
+              f" (best so far {state['best']:.6f} at {state['winner']},"
+              f" {state['elapsed']:.0f}s spent)")
+    mmin = state["next_m"] if state else 2
+    if state and args.seed > state["best"]:
+        state["best"] = args.seed
 
     print(f"X = {X}, cap M = {M}"
           + (f", budget {args.budget:.0f}s" if args.budget else "")
           + (f", jobs {jobs}" if jobs > 1 else ""))
-    pilot = sweep(X, min(M, 2000), verbose=False)
-    print(f"  pilot (M={min(M, 2000)}): density {pilot['best']:.6f}"
-          f" at {pilot['winner']}  [{pilot['seconds']}s]")
+    if state:
+        pilot = {"best": state["best"],
+                 "winner": tuple(state["winner"]) if state["winner"] else None,
+                 "seconds": 0.0}
+    else:
+        pilot = sweep(X, min(M, 2000), verbose=False)
+        if args.seed > pilot["best"]:
+            pilot = {"best": args.seed, "winner": None,
+                     "seconds": pilot["seconds"]}
+        print(f"  pilot (M={min(M, 2000)}): density {pilot['best']:.6f}"
+              f" at {pilot['winner']}  [{pilot['seconds']}s]")
     if jobs == 1:
-        full = sweep(X, M, budget=args.budget, seed=pilot["best"])
+        full = sweep(X, M, budget=args.budget, seed=pilot["best"], mmin=mmin)
     else:
         import multiprocessing as mp
         t0 = time.time()
-        with mp.Pool(jobs) as pool:
-            parts = pool.map(_worker, [(X, M, args.budget, pilot["best"],
-                                        2 + j, jobs) for j in range(jobs)])
+        ev = mp.Event()
+        interrupted = False
+        with mp.Pool(jobs, initializer=_init_worker, initargs=(ev,)) as pool:
+            res = pool.map_async(_worker, [(X, M, args.budget, pilot["best"],
+                                            mmin + j, jobs) for j in range(jobs)])
+            try:
+                parts = res.get()
+            except KeyboardInterrupt:
+                interrupted = True
+                print("\n  interrupt received: asking workers to stop at their"
+                      " current modulus...", flush=True)
+                ev.set()
+                parts = res.get()
         hits = [q for q in parts if q["winner"]]
         top = max(hits, key=lambda q: q["best"]) if hits else parts[0]
 
         def stride_end(j):
-            lo = 2 + j
+            lo = mmin + j
             return lo + ((M - lo) // jobs) * jobs if lo <= M else lo - jobs
         done = all(q["swept_to"] == stride_end(j) for j, q in enumerate(parts))
         full = {"swept_to": M if done else min(q["swept_to"] for q in parts),
@@ -160,15 +229,32 @@ def main():
                 "seconds": round(time.time() - t0, 1)}
     if full["winner"] is None:
         full["winner"], full["best"] = pilot["winner"], pilot["best"]
-    m, c, L = full["winner"]
-    crit = critical_primes(X, m, c, L)
-    print(f"  record within M<={full['swept_to']}: (m,c,L)=({m},{c},{L})"
-          f"  density {L}/{m} = {full['best']:.6f}")
+    if full["winner"] is None:
+        print(f"  no set within M<={full['swept_to']} beats the incumbent"
+              f" (density {full['best']:.6f}); run is coverage-only")
+    else:
+        m, c, L = full["winner"]
+        crit = critical_primes(X, m, c, L)
+        print(f"  record within M<={full['swept_to']}: (m,c,L)=({m},{c},{L})"
+              f"  density {L}/{m} = {full['best']:.6f}")
+        print(f"  critical primes ({len(crit)}): {crit[:10]}"
+              + (f" ... +{len(crit) - 10} more" if len(crit) > 10 else ""))
     print(f"  alive moduli: {full['alive']}   sweep time {full['seconds']}s")
-    print(f"  critical primes ({len(crit)}): {crit[:10]}"
-          + (f" ... +{len(crit) - 10} more" if len(crit) > 10 else ""))
     if full["swept_to"] < M:
-        print(f"  NOTE: budget exhausted at m={full['swept_to']} < {M}")
+        why = "interrupted" if (jobs > 1 and interrupted) else "budget exhausted"
+        print(f"  NOTE: {why} at m={full['swept_to']} < {M}")
+    if args.state:
+        done = full["swept_to"] >= M
+        json.dump({"X": X, "cap": M, "next_m": full["swept_to"] + 1,
+                   "best": full["best"],
+                   "winner": list(full["winner"]) if full["winner"] else None,
+                   "alive": full["alive"] + (state["alive"] if state else 0),
+                   "elapsed": full["seconds"] + (state["elapsed"] if state else 0.0),
+                   "complete": done},
+                  open(args.state, "w"), indent=1)
+        print(f"  state -> {args.state}"
+              + ("  (complete)" if done else
+                 "  (re-run the same command to continue)"))
 
 
 if __name__ == "__main__":
