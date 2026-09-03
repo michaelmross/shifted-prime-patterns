@@ -2,10 +2,6 @@
 CODE LICENSE: MIT License
 ===============================================================================
 
-Applies to the contents of the code/ directory.
-
-MIT License
-
 Copyright (c) 2026 Michael M. Ross
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,10 +25,6 @@ SOFTWARE.
 ===============================================================================
 DOCUMENTATION, FIGURES & DATA LICENSE: CC BY 4.0
 ===============================================================================
-
-Applies to everything outside the code/ directory, including the reports,
-the note and its source, the figures/ directory, and the data files in
-results/.
 
 The text, notes, figures, and data in this repository are licensed under
 the Creative Commons Attribution 4.0 International License (CC BY 4.0).
