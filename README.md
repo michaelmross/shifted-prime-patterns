@@ -1,4 +1,4 @@
-# shifted-prime-patterns
+# Shifted Prime Patterns
 
 [![verify-certificates](https://github.com/michaelmross/shifted-prime-patterns/actions/workflows/verify.yml/badge.svg)](https://github.com/michaelmross/shifted-prime-patterns/actions/workflows/verify.yml)
 
