@@ -1,6 +1,5 @@
-===============================================================================
-CODE LICENSE: MIT License
-===============================================================================
+***
+## CODE LICENSE: MIT License
 
 Copyright (c) 2026 Michael M. Ross
 
@@ -22,9 +21,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-===============================================================================
-DOCUMENTATION, FIGURES & DATA LICENSE: CC BY 4.0
-===============================================================================
+***
+## DOCUMENTATION, FIGURES & DATA LICENSE: CC BY 4.0
 
 The text, notes, figures, and data in this repository are licensed under
 the Creative Commons Attribution 4.0 International License (CC BY 4.0).
